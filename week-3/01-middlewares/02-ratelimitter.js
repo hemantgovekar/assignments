@@ -11,16 +11,49 @@ const app = express();
 // You have been given a numberOfRequestsForUser object to start off with which
 // clears every one second
 
+const rateLimit = (req, res, next) => {
+  // const user = req.headers['user-id'];
+
+  // if (numberOfRequestsForUser[user]) {
+  //   if (numberOfRequestsForUser[user] === 5) {
+  //     res.status(404).send();
+  //     return;
+  //   }
+  //   else
+  //     numberOfRequestsForUser[user]++;
+  // }
+  // else {
+  //   numberOfRequestsForUser[user] = 1;
+  // }
+  // next();
+  const user = req.headers['user-id'];
+  if (numberOfRequestsForUser[user]) {
+    if (numberOfRequestsForUser[user] === 5) {
+      res.status(404).send();
+      return;
+    }
+    else {
+      numberOfRequestsForUser[user]++;
+    }
+  }
+  else {
+    numberOfRequestsForUser[user] = 1;
+  }
+  next();
+}
+
+app.use(rateLimit);
+
 let numberOfRequestsForUser = {};
 setInterval(() => {
-    numberOfRequestsForUser = {};
+  numberOfRequestsForUser = {};
 }, 1000)
 
-app.get('/user', function(req, res) {
+app.get('/user', function (req, res) {
   res.status(200).json({ name: 'john' });
 });
 
-app.post('/user', function(req, res) {
+app.post('/user', function (req, res) {
   res.status(200).json({ msg: 'created dummy user' });
 });
 
