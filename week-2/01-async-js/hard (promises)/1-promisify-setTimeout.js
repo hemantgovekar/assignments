@@ -3,6 +3,7 @@
 */
 
 function wait(n) {
+    const pro = new Promise()
 }
 
 module.exports = wait;

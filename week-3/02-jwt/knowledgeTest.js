@@ -5,28 +5,37 @@ const z = require("zod")
 
 const userSchema = z.string().email();
 const pwdSchema = z.string().length(16)
+const tokenSchema = z.string();
 
 const testKnowledge = (userInput) => {
     const userParsed = userSchema.safeParse(userInput);
     const pwdParsed = pwdSchema.safeParse(userInput);
-    console.log(userParsed && pwdParsed);
+    return (userParsed && pwdParsed);
 }
 
-console.log(testKnowledge("hemant@gmail.com"))
+console.log("testknowlege", testKnowledge("hemant@gmail.com"))
 
 let token = "";
 const secret = "govekar"
+
 const checkjwttoken = (username, password) => {
     token = jwt.sign({ "username": username, "password": password }, secret);
     console.log(token);
+
+
+    token = tokenSchema.safeParse(token);
+
+    const decodedJwt = jwt.decode(token.data, { complete: true });
+    console.log(decodedJwt);
 }
 
 console.log(checkjwttoken("hemantgovekar@gmail.com", "hemant123"));
 
-const verifyToken = () => {
+
+const verifyToken = (token, secret) => {
     const verify = jwt.verify(token, secret);
-    console.log(verify);
+    console.log("verify", verify);
+
 }
-
-console.log(verifyToken())
-
+console.log("token", token)
+console.log(verifyToken(token.data, secret))
